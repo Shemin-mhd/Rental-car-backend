@@ -1,0 +1,1046 @@
+﻿{
+    "value":  [
+                  {
+                      "specifications":  {
+                                             "fuelType":  "Petrol"
+                                         },
+                      "gallery":  [
+
+                                  ],
+                      "features":  [
+
+                                   ],
+                      "_id":  "69c5151bbefb283665d4329e",
+                      "name":  "Benz 124",
+                      "model":  "124",
+                      "year":  1985,
+                      "pricePerDay":  15000,
+                      "seats":  5,
+                      "transmission":  "Auto",
+                      "location":  "Malappuram",
+                      "category":  "Wedding",
+                      "image":  "\"C:\\Users\\User\\OneDrive\\Pictures\\WhatsApp Image 2026-03-30 at 4.02.47 PM.jpeg\"",
+                      "selfDrive":  false,
+                      "withDriver":  true,
+                      "isAvailable":  true,
+                      "rating":  4.5,
+                      "__v":  0
+                  },
+                  {
+                      "specifications":  {
+                                             "fuelType":  "Petrol"
+                                         },
+                      "gallery":  [
+
+                                  ],
+                      "features":  [
+
+                                   ],
+                      "_id":  "69c5151bbefb283665d432a8",
+                      "name":  "Mahindra Thar",
+                      "model":  "4x4",
+                      "year":  2023,
+                      "pricePerDay":  6000,
+                      "seats":  4,
+                      "transmission":  "Auto",
+                      "location":  "Palakkad",
+                      "category":  "SUV",
+                      "image":  "https://akm-img-a-in.tosshub.com/indiatoday/images/story/202408/mahindra-thar-roxx-200912599-16x9_0.jpg?VersionId=8gFUdclSl6.epCT95iSrtU5MCXzyDyRR\u0026size=690:388",
+                      "selfDrive":  true,
+                      "withDriver":  true,
+                      "isAvailable":  true,
+                      "rating":  4.5,
+                      "__v":  0
+                  },
+                  {
+                      "specifications":  {
+                                             "fuelType":  "Petrol"
+                                         },
+                      "gallery":  [
+
+                                  ],
+                      "features":  [
+
+                                   ],
+                      "_id":  "69c5151bbefb283665d432aa",
+                      "name":  "Volvo S90",
+                      "model":  "Luxury",
+                      "year":  2023,
+                      "pricePerDay":  42000,
+                      "seats":  5,
+                      "transmission":  "Auto",
+                      "location":  "Kannur",
+                      "category":  "Luxury",
+                      "image":  "https://images.unsplash.com/photo-1614200013209-5bc091d394b9",
+                      "selfDrive":  true,
+                      "withDriver":  true,
+                      "isAvailable":  true,
+                      "rating":  4.5,
+                      "__v":  0
+                  },
+                  {
+                      "specifications":  {
+                                             "fuelType":  "Petrol"
+                                         },
+                      "gallery":  [
+
+                                  ],
+                      "features":  [
+
+                                   ],
+                      "_id":  "69c5151bbefb283665d432ad",
+                      "name":  "Skoda Kodiaq",
+                      "model":  "L\u0026K",
+                      "year":  2022,
+                      "pricePerDay":  8500,
+                      "seats":  7,
+                      "transmission":  "Auto",
+                      "location":  "Alappuzha",
+                      "category":  "Family",
+                      "image":  "https://images.unsplash.com/photo-1627230485078-d4468f702758",
+                      "selfDrive":  true,
+                      "withDriver":  true,
+                      "isAvailable":  true,
+                      "rating":  4.5,
+                      "__v":  0
+                  },
+                  {
+                      "specifications":  {
+                                             "fuelType":  "Petrol"
+                                         },
+                      "gallery":  [
+
+                                  ],
+                      "features":  [
+
+                                   ],
+                      "_id":  "69c5151bbefb283665d432af",
+                      "name":  "Discovery Sport",
+                      "model":  "HSE",
+                      "year":  2023,
+                      "pricePerDay":  18000,
+                      "seats":  7,
+                      "transmission":  "Auto",
+                      "location":  "Kottayam",
+                      "category":  "SUV",
+                      "image":  "https://images.unsplash.com/photo-1566274360674-60c02947119f",
+                      "selfDrive":  true,
+                      "withDriver":  true,
+                      "isAvailable":  true,
+                      "rating":  4.5,
+                      "__v":  0
+                  },
+                  {
+                      "specifications":  {
+                                             "fuelType":  "Petrol"
+                                         },
+                      "gallery":  [
+
+                                  ],
+                      "features":  [
+
+                                   ],
+                      "_id":  "69c5151bbefb283665d432b4",
+                      "name":  "Audi RS5",
+                      "model":  "Sport",
+                      "year":  2023,
+                      "pricePerDay":  55000,
+                      "seats":  4,
+                      "transmission":  "Auto",
+                      "location":  "Trivandrum",
+                      "category":  "Luxury",
+                      "image":  "https://images.unsplash.com/photo-1614200013209-5bc091d394b9",
+                      "selfDrive":  true,
+                      "withDriver":  true,
+                      "isAvailable":  true,
+                      "rating":  4.5,
+                      "__v":  0
+                  },
+                  {
+                      "specifications":  {
+                                             "fuelType":  "Petrol"
+                                         },
+                      "gallery":  [
+
+                                  ],
+                      "features":  [
+
+                                   ],
+                      "_id":  "69c5151bbefb283665d43299",
+                      "name":  "Audi A6 Matrix",
+                      "model":  "A6",
+                      "year":  2023,
+                      "pricePerDay":  28000,
+                      "seats":  4,
+                      "transmission":  "Auto",
+                      "location":  "Thrissur",
+                      "category":  "Wedding",
+                      "image":  "https://images.unsplash.com/photo-1606152424101-dd29bc393b4f",
+                      "selfDrive":  true,
+                      "withDriver":  true,
+                      "isAvailable":  true,
+                      "rating":  4.5,
+                      "__v":  0
+                  },
+                  {
+                      "specifications":  {
+                                             "fuelType":  "Petrol"
+                                         },
+                      "gallery":  [
+
+                                  ],
+                      "features":  [
+
+                                   ],
+                      "_id":  "69c5151bbefb283665d43293",
+                      "name":  "Jaguar XF Luxury",
+                      "model":  "XF",
+                      "year":  2022,
+                      "pricePerDay":  35000,
+                      "seats":  4,
+                      "transmission":  "Auto",
+                      "location":  "Kochi",
+                      "category":  "Wedding",
+                      "image":  "https://hips.hearstapps.com/hmg-prod/images/2024-jaguar-xf-p300-r-dynamic-101-64e8cdd02fc9a.jpg?crop=0.775xw:0.658xh;0.0879xw,0.203xh\u0026resize=2048:*",
+                      "selfDrive":  false,
+                      "withDriver":  true,
+                      "isAvailable":  true,
+                      "rating":  4.5,
+                      "__v":  0
+                  },
+                  {
+                      "specifications":  {
+                                             "fuelType":  "Petrol"
+                                         },
+                      "gallery":  [
+
+                                  ],
+                      "features":  [
+
+                                   ],
+                      "_id":  "69c5151bbefb283665d4329a",
+                      "name":  "Mercedes C-Class",
+                      "model":  "C-200",
+                      "year":  2022,
+                      "pricePerDay":  25000,
+                      "seats":  4,
+                      "transmission":  "Auto",
+                      "location":  "Malappuram",
+                      "category":  "Wedding",
+                      "image":  "https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8",
+                      "selfDrive":  true,
+                      "withDriver":  true,
+                      "isAvailable":  true,
+                      "rating":  4.5,
+                      "__v":  0
+                  },
+                  {
+                      "specifications":  {
+                                             "fuelType":  "Petrol"
+                                         },
+                      "gallery":  [
+
+                                  ],
+                      "features":  [
+
+                                   ],
+                      "_id":  "69c5151bbefb283665d4329f",
+                      "name":  "Audi Q8 Quattro",
+                      "model":  "Q8",
+                      "year":  2022,
+                      "pricePerDay":  28000,
+                      "seats":  5,
+                      "transmission":  "Auto",
+                      "location":  "Trivandrum",
+                      "category":  "SUV",
+                      "image":  "https://images.unsplash.com/photo-1606152424101-dd29bc393b4f",
+                      "selfDrive":  true,
+                      "withDriver":  true,
+                      "isAvailable":  true,
+                      "rating":  4.5,
+                      "__v":  0
+                  },
+                  {
+                      "specifications":  {
+                                             "fuelType":  "Petrol"
+                                         },
+                      "gallery":  [
+
+                                  ],
+                      "features":  [
+
+                                   ],
+                      "_id":  "69c5151bbefb283665d4329c",
+                      "name":  "Bentley Flying Spur",
+                      "model":  "W12",
+                      "year":  2022,
+                      "pricePerDay":  65000,
+                      "seats":  4,
+                      "transmission":  "Auto",
+                      "location":  "Kochi",
+                      "category":  "Wedding",
+                      "image":  "https://images.unsplash.com/photo-1647891941746-874f66408272",
+                      "selfDrive":  true,
+                      "withDriver":  true,
+                      "isAvailable":  true,
+                      "rating":  4.5,
+                      "__v":  0
+                  },
+                  {
+                      "specifications":  {
+                                             "fuelType":  "Petrol"
+                                         },
+                      "gallery":  [
+
+                                  ],
+                      "features":  [
+
+                                   ],
+                      "_id":  "69c5151bbefb283665d432ae",
+                      "name":  "Lexus NX",
+                      "model":  "350h",
+                      "year":  2024,
+                      "pricePerDay":  30000,
+                      "seats":  5,
+                      "transmission":  "Auto",
+                      "location":  "Kottayam",
+                      "category":  "Luxury",
+                      "image":  "https://images.unsplash.com/photo-1621648043685-64906f2f9954",
+                      "selfDrive":  true,
+                      "withDriver":  true,
+                      "isAvailable":  true,
+                      "rating":  4.5,
+                      "__v":  0
+                  },
+                  {
+                      "specifications":  {
+                                             "fuelType":  "Petrol"
+                                         },
+                      "gallery":  [
+
+                                  ],
+                      "features":  [
+
+                                   ],
+                      "_id":  "69c5151bbefb283665d43298",
+                      "name":  "Jaguar XF Luxury",
+                      "model":  "XF",
+                      "year":  2022,
+                      "pricePerDay":  35000,
+                      "seats":  4,
+                      "transmission":  "Auto",
+                      "location":  "Trivandrum",
+                      "category":  "Wedding",
+                      "image":  "https://images.unsplash.com/photo-1544636331-e26879cd4d9b",
+                      "selfDrive":  true,
+                      "withDriver":  true,
+                      "isAvailable":  true,
+                      "rating":  4.5,
+                      "__v":  0
+                  },
+                  {
+                      "specifications":  {
+                                             "fuelType":  "Petrol"
+                                         },
+                      "gallery":  [
+
+                                  ],
+                      "features":  [
+
+                                   ],
+                      "_id":  "69c5151bbefb283665d432a7",
+                      "name":  "Volvo XC90",
+                      "model":  "Inscription",
+                      "year":  2023,
+                      "pricePerDay":  22000,
+                      "seats":  7,
+                      "transmission":  "Auto",
+                      "location":  "Thrissur",
+                      "category":  "SUV",
+                      "image":  "https://images.unsplash.com/photo-1485291571129-99a1f5aee944",
+                      "selfDrive":  true,
+                      "withDriver":  true,
+                      "isAvailable":  true,
+                      "rating":  4.5,
+                      "__v":  0
+                  },
+                  {
+                      "specifications":  {
+                                             "fuelType":  "Petrol"
+                                         },
+                      "gallery":  [
+
+                                  ],
+                      "features":  [
+
+                                   ],
+                      "_id":  "69c5151bbefb283665d432a1",
+                      "name":  "Porsche 911 Carrera",
+                      "model":  "911",
+                      "year":  2023,
+                      "pricePerDay":  75000,
+                      "seats":  2,
+                      "transmission":  "Auto",
+                      "location":  "Kozhikode",
+                      "category":  "Vintage",
+                      "image":  "https://images.unsplash.com/photo-1503376780353-7e6692767b70",
+                      "selfDrive":  true,
+                      "withDriver":  true,
+                      "isAvailable":  true,
+                      "rating":  4.5,
+                      "__v":  0
+                  },
+                  {
+                      "specifications":  {
+                                             "fuelType":  "Petrol"
+                                         },
+                      "gallery":  [
+
+                                  ],
+                      "features":  [
+
+                                   ],
+                      "_id":  "69c5151bbefb283665d432a3",
+                      "name":  "Jeep Wrangler",
+                      "model":  "Rubicon",
+                      "year":  2023,
+                      "pricePerDay":  15000,
+                      "seats":  5,
+                      "transmission":  "Auto",
+                      "location":  "Malappuram",
+                      "category":  "SUV",
+                      "image":  "https://images.unsplash.com/photo-1610468305096-030a21419760",
+                      "selfDrive":  true,
+                      "withDriver":  true,
+                      "isAvailable":  true,
+                      "rating":  4.5,
+                      "__v":  0
+                  },
+                  {
+                      "specifications":  {
+                                             "fuelType":  "Petrol"
+                                         },
+                      "gallery":  [
+
+                                  ],
+                      "features":  [
+
+                                   ],
+                      "_id":  "69c5151bbefb283665d432a9",
+                      "name":  "Tata Safari",
+                      "model":  "Dark",
+                      "year":  2024,
+                      "pricePerDay":  6500,
+                      "seats":  7,
+                      "transmission":  "Auto",
+                      "location":  "Palakkad",
+                      "category":  "Family",
+                      "image":  "https://images.unsplash.com/photo-1502419511317-0b11bd32c8ce",
+                      "selfDrive":  true,
+                      "withDriver":  true,
+                      "isAvailable":  true,
+                      "rating":  4.5,
+                      "__v":  0
+                  },
+                  {
+                      "specifications":  {
+                                             "fuelType":  "Petrol"
+                                         },
+                      "gallery":  [
+
+                                  ],
+                      "features":  [
+
+                                   ],
+                      "_id":  "69c5151bbefb283665d432ab",
+                      "name":  "Kia Carnival",
+                      "model":  "Premium",
+                      "year":  2023,
+                      "pricePerDay":  11000,
+                      "seats":  8,
+                      "transmission":  "Auto",
+                      "location":  "Kannur",
+                      "category":  "Family",
+                      "image":  "https://images.unsplash.com/photo-1621135802920-133df287f89c",
+                      "selfDrive":  true,
+                      "withDriver":  true,
+                      "isAvailable":  true,
+                      "rating":  4.5,
+                      "__v":  0
+                  },
+                  {
+                      "specifications":  {
+                                             "fuelType":  "Petrol"
+                                         },
+                      "gallery":  [
+
+                                  ],
+                      "features":  [
+
+                                   ],
+                      "_id":  "69c5151bbefb283665d432ac",
+                      "name":  "Audi A4",
+                      "model":  "Premium",
+                      "year":  2023,
+                      "pricePerDay":  15000,
+                      "seats":  5,
+                      "transmission":  "Auto",
+                      "location":  "Alappuzha",
+                      "category":  "Luxury",
+                      "image":  "https://images.unsplash.com/photo-1541348263662-e0c8de4259ba",
+                      "selfDrive":  true,
+                      "withDriver":  true,
+                      "isAvailable":  true,
+                      "rating":  4.5,
+                      "__v":  0
+                  },
+                  {
+                      "specifications":  {
+                                             "fuelType":  "Petrol"
+                                         },
+                      "gallery":  [
+
+                                  ],
+                      "features":  [
+
+                                   ],
+                      "_id":  "69c5151bbefb283665d432b2",
+                      "name":  "Maserati Quattro",
+                      "model":  "GTS",
+                      "year":  2022,
+                      "pricePerDay":  75000,
+                      "seats":  4,
+                      "transmission":  "Auto",
+                      "location":  "Kochi",
+                      "category":  "Luxury",
+                      "image":  "https://images.unsplash.com/photo-1621648043685-64906f2f9954",
+                      "selfDrive":  true,
+                      "withDriver":  true,
+                      "isAvailable":  true,
+                      "rating":  4.5,
+                      "__v":  0
+                  },
+                  {
+                      "specifications":  {
+                                             "fuelType":  "Petrol"
+                                         },
+                      "gallery":  [
+
+                                  ],
+                      "features":  [
+
+                                   ],
+                      "_id":  "69c5151bbefb283665d432a4",
+                      "name":  "Mahindra XUV700",
+                      "model":  "AX7L",
+                      "year":  2024,
+                      "pricePerDay":  7500,
+                      "seats":  7,
+                      "transmission":  "Auto",
+                      "location":  "Malappuram",
+                      "category":  "Family",
+                      "image":  "https://images.unsplash.com/photo-1634567406691-118fd7668670",
+                      "selfDrive":  true,
+                      "withDriver":  true,
+                      "isAvailable":  true,
+                      "rating":  4.5,
+                      "__v":  0
+                  },
+                  {
+                      "specifications":  {
+                                             "fuelType":  "Petrol"
+                                         },
+                      "gallery":  [
+
+                                  ],
+                      "features":  [
+
+                                   ],
+                      "_id":  "69c5151bbefb283665d432b0",
+                      "name":  "Land Rover Discovery",
+                      "model":  "HSE",
+                      "year":  2022,
+                      "pricePerDay":  25000,
+                      "seats":  7,
+                      "transmission":  "Auto",
+                      "location":  "Wayanad",
+                      "category":  "SUV",
+                      "image":  "https://images.unsplash.com/photo-1563200923-d3080e6080dc",
+                      "selfDrive":  true,
+                      "withDriver":  true,
+                      "isAvailable":  true,
+                      "rating":  4.5,
+                      "__v":  0
+                  },
+                  {
+                      "specifications":  {
+                                             "fuelType":  "Petrol"
+                                         },
+                      "gallery":  [
+
+                                  ],
+                      "features":  [
+
+                                   ],
+                      "_id":  "69c5151bbefb283665d4329d",
+                      "name":  "Chrysler 300 Stretch",
+                      "model":  "Limo",
+                      "year":  2021,
+                      "pricePerDay":  95000,
+                      "seats":  10,
+                      "transmission":  "Auto",
+                      "location":  "Kochi",
+                      "category":  "Wedding",
+                      "image":  "https://images.unsplash.com/photo-1549317661-bd32c8ce0db2",
+                      "selfDrive":  false,
+                      "withDriver":  true,
+                      "isAvailable":  true,
+                      "rating":  4.5,
+                      "__v":  0
+                  },
+                  {
+                      "specifications":  {
+                                             "fuelType":  "Petrol"
+                                         },
+                      "gallery":  [
+
+                                  ],
+                      "features":  [
+
+                                   ],
+                      "_id":  "69c5151bbefb283665d432b1",
+                      "name":  "Thar RWD",
+                      "model":  "Black",
+                      "year":  2023,
+                      "pricePerDay":  5500,
+                      "seats":  4,
+                      "transmission":  "Manual",
+                      "location":  "Wayanad",
+                      "category":  "SUV",
+                      "image":  "https://images.unsplash.com/photo-1634567406691-118fd7668670",
+                      "selfDrive":  true,
+                      "withDriver":  true,
+                      "isAvailable":  true,
+                      "rating":  4.5,
+                      "__v":  0
+                  },
+                  {
+                      "specifications":  {
+                                             "fuelType":  "Petrol"
+                                         },
+                      "gallery":  [
+
+                                  ],
+                      "features":  [
+
+                                   ],
+                      "_id":  "69c5151bbefb283665d43297",
+                      "name":  "Bentley Continental",
+                      "model":  "GT",
+                      "year":  2023,
+                      "pricePerDay":  75000,
+                      "seats":  4,
+                      "transmission":  "Auto",
+                      "location":  "Kozhikode",
+                      "category":  "Wedding",
+                      "image":  "https://images.unsplash.com/photo-1621648043685-64906f2f9954",
+                      "selfDrive":  true,
+                      "withDriver":  true,
+                      "isAvailable":  true,
+                      "rating":  4.5,
+                      "__v":  0
+                  },
+                  {
+                      "specifications":  {
+                                             "fuelType":  "Petrol"
+                                         },
+                      "gallery":  [
+
+                                  ],
+                      "features":  [
+
+                                   ],
+                      "_id":  "69c5151bbefb283665d43296",
+                      "name":  "Mercedes Maybach",
+                      "model":  "S-680",
+                      "year":  2024,
+                      "pricePerDay":  85000,
+                      "seats":  4,
+                      "transmission":  "Auto",
+                      "location":  "Kochi",
+                      "category":  "Wedding",
+                      "image":  "https://images.unsplash.com/photo-1549416878-3860bb4d728d",
+                      "selfDrive":  true,
+                      "withDriver":  true,
+                      "isAvailable":  true,
+                      "rating":  4.5,
+                      "__v":  0
+                  },
+                  {
+                      "specifications":  {
+                                             "fuelType":  "Petrol"
+                                         },
+                      "gallery":  [
+
+                                  ],
+                      "features":  [
+
+                                   ],
+                      "_id":  "69c5151bbefb283665d43292",
+                      "name":  "Bmw M4",
+                      "model":  "Cloud",
+                      "year":  2025,
+                      "pricePerDay":  55000,
+                      "seats":  4,
+                      "transmission":  "Manual",
+                      "location":  "Kochi",
+                      "category":  "Luxury",
+                      "image":  "https://di-uploads-pod23.dealerinspire.com/bmwofowingsmills/uploads/2024/07/P90548593_highRes_the-all-new-bmw-m4-c-1.jpg",
+                      "selfDrive":  false,
+                      "withDriver":  true,
+                      "isAvailable":  true,
+                      "rating":  4.5,
+                      "__v":  0
+                  },
+                  {
+                      "specifications":  {
+                                             "fuelType":  "Petrol"
+                                         },
+                      "gallery":  [
+
+                                  ],
+                      "features":  [
+
+                                   ],
+                      "_id":  "69c5151bbefb283665d43294",
+                      "name":  "Toyota Fortuner",
+                      "model":  "GR-S",
+                      "year":  2023,
+                      "pricePerDay":  12000,
+                      "seats":  7,
+                      "transmission":  "Auto",
+                      "location":  "Kochi",
+                      "category":  "SUV",
+                      "image":  "https://www.carstudiomohali.com/fortuner-car-price-in-india/",
+                      "selfDrive":  true,
+                      "withDriver":  true,
+                      "isAvailable":  true,
+                      "rating":  4.5,
+                      "__v":  0
+                  },
+                  {
+                      "specifications":  {
+                                             "fuelType":  "Petrol"
+                                         },
+                      "gallery":  [
+
+                                  ],
+                      "features":  [
+
+                                   ],
+                      "_id":  "69c5151bbefb283665d432a2",
+                      "name":  "Toyota Innova Hycross",
+                      "model":  "ZX",
+                      "year":  2024,
+                      "pricePerDay":  9000,
+                      "seats":  7,
+                      "transmission":  "Auto",
+                      "location":  "Kozhikode",
+                      "category":  "Family",
+                      "image":  "https://images.unsplash.com/photo-1590362891991-f776e747a588",
+                      "selfDrive":  true,
+                      "withDriver":  true,
+                      "isAvailable":  true,
+                      "rating":  4.5,
+                      "__v":  0
+                  },
+                  {
+                      "specifications":  {
+                                             "fuelType":  "Petrol"
+                                         },
+                      "gallery":  [
+
+                                  ],
+                      "features":  [
+
+                                   ],
+                      "_id":  "69c5151bbefb283665d432b3",
+                      "name":  "Bentley Mulliner",
+                      "model":  "W12",
+                      "year":  2023,
+                      "pricePerDay":  95000,
+                      "seats":  4,
+                      "transmission":  "Auto",
+                      "location":  "Kozhikode",
+                      "category":  "Wedding",
+                      "image":  "https://images.unsplash.com/photo-1647891941746-874f66408272",
+                      "selfDrive":  false,
+                      "withDriver":  true,
+                      "isAvailable":  true,
+                      "rating":  4.5,
+                      "__v":  0
+                  },
+                  {
+                      "specifications":  {
+                                             "fuelType":  "Petrol"
+                                         },
+                      "gallery":  [
+
+                                  ],
+                      "features":  [
+
+                                   ],
+                      "_id":  "69c5151bbefb283665d43291",
+                      "name":  "Mercedes Benz124",
+                      "model":  "124",
+                      "year":  1985,
+                      "pricePerDay":  12000,
+                      "seats":  5,
+                      "transmission":  "Auto",
+                      "location":  "Malappuram",
+                      "category":  "Wedding",
+                      "image":  "",
+                      "selfDrive":  true,
+                      "withDriver":  true,
+                      "isAvailable":  true,
+                      "rating":  4.5,
+                      "__v":  0
+                  },
+                  {
+                      "specifications":  {
+                                             "fuelType":  "Petrol"
+                                         },
+                      "gallery":  [
+
+                                  ],
+                      "features":  [
+
+                                   ],
+                      "_id":  "69c5151bbefb283665d43295",
+                      "name":  "Rolls Royce Phantom",
+                      "model":  "Series II",
+                      "year":  2023,
+                      "pricePerDay":  155000,
+                      "seats":  4,
+                      "transmission":  "Auto",
+                      "location":  "Kochi",
+                      "category":  "Wedding",
+                      "image":  "https://images.unsplash.com/photo-1631214502574-7e04f98103c8",
+                      "selfDrive":  true,
+                      "withDriver":  true,
+                      "isAvailable":  true,
+                      "rating":  4.5,
+                      "__v":  0
+                  },
+                  {
+                      "specifications":  {
+                                             "fuelType":  "Petrol"
+                                         },
+                      "gallery":  [
+
+                                  ],
+                      "features":  [
+
+                                   ],
+                      "_id":  "69c5151bbefb283665d4329b",
+                      "name":  "BMW 5 Series",
+                      "model":  "530i",
+                      "year":  2023,
+                      "pricePerDay":  32000,
+                      "seats":  4,
+                      "transmission":  "Auto",
+                      "location":  "Kochi",
+                      "category":  "Wedding",
+                      "image":  "https://images.unsplash.com/photo-1555215695-3004980ad54e",
+                      "selfDrive":  true,
+                      "withDriver":  true,
+                      "isAvailable":  true,
+                      "rating":  4.5,
+                      "__v":  0
+                  },
+                  {
+                      "specifications":  {
+                                             "fuelType":  "Petrol"
+                                         },
+                      "gallery":  [
+
+                                  ],
+                      "features":  [
+
+                                   ],
+                      "_id":  "69c5151bbefb283665d432a0",
+                      "name":  "Range Rover Defender",
+                      "model":  "110",
+                      "year":  2024,
+                      "pricePerDay":  32000,
+                      "seats":  7,
+                      "transmission":  "Auto",
+                      "location":  "Kozhikode",
+                      "category":  "SUV",
+                      "image":  "https://jlr.scene7.com/is/image/jlr/L66326US_303104383_087_MOSAIC_CROP?wid=240\u0026fit=stretch%2C1",
+                      "selfDrive":  true,
+                      "withDriver":  true,
+                      "isAvailable":  true,
+                      "rating":  4.5,
+                      "__v":  0
+                  },
+                  {
+                      "specifications":  {
+                                             "fuelType":  "Petrol"
+                                         },
+                      "gallery":  [
+
+                                  ],
+                      "features":  [
+
+                                   ],
+                      "_id":  "69c5151bbefb283665d432a5",
+                      "name":  "Mini Cooper",
+                      "model":  "S",
+                      "year":  2023,
+                      "pricePerDay":  18000,
+                      "seats":  4,
+                      "transmission":  "Auto",
+                      "location":  "Malappuram",
+                      "category":  "Luxury",
+                      "image":  "https://images.unsplash.com/photo-1490902824361-9f939766952d",
+                      "selfDrive":  true,
+                      "withDriver":  true,
+                      "isAvailable":  true,
+                      "rating":  4.5,
+                      "__v":  0
+                  },
+                  {
+                      "specifications":  {
+                                             "fuelType":  "Petrol"
+                                         },
+                      "gallery":  [
+
+                                  ],
+                      "features":  [
+
+                                   ],
+                      "_id":  "69c5151bbefb283665d432a6",
+                      "name":  "Bentley Spur",
+                      "model":  "W12",
+                      "year":  2022,
+                      "pricePerDay":  65000,
+                      "seats":  4,
+                      "transmission":  "Auto",
+                      "location":  "Thrissur",
+                      "category":  "Wedding",
+                      "image":  "https://images.unsplash.com/photo-1647891941746-874f66408272",
+                      "selfDrive":  false,
+                      "withDriver":  true,
+                      "isAvailable":  true,
+                      "rating":  4.5,
+                      "__v":  0
+                  },
+                  {
+                      "specifications":  {
+                                             "fuelType":  "Petrol",
+                                             "engine":  "bmw",
+                                             "hp":  3400,
+                                             "topSpeed":  180,
+                                             "acceleration":  "100"
+                                         },
+                      "_id":  "69ce0b878b9d9a71e391fe4a",
+                      "name":  "bmw ",
+                      "model":  "m3 competition",
+                      "year":  2012,
+                      "pricePerDay":  12000,
+                      "seats":  5,
+                      "transmission":  "Auto",
+                      "location":  "wayanad",
+                      "category":  "Luxury",
+                      "image":  "car-1775111047161-621851106.jpeg",
+                      "gallery":  [
+                                      "car-1775111047168-597266750.jpeg",
+                                      "car-1775111047177-709889853.jpeg"
+                                  ],
+                      "selfDrive":  false,
+                      "withDriver":  true,
+                      "isAvailable":  true,
+                      "rating":  4.5,
+                      "ownerId":  "69cdf821b00baeef6f478484",
+                      "description":  "Bmw with all features and all paper clear ",
+                      "features":  [
+                                       "360 Camera",
+                                       "Premium Sound",
+                                       "Sunroof"
+                                   ],
+                      "__v":  0
+                  },
+                  {
+                      "specifications":  {
+                                             "fuelType":  "Petrol",
+                                             "engine":  "",
+                                             "hp":  null,
+                                             "topSpeed":  null,
+                                             "acceleration":  ""
+                                         },
+                      "_id":  "69ce0d718b9d9a71e391ff84",
+                      "name":  "bmw",
+                      "model":  "m3 competition",
+                      "year":  2012,
+                      "pricePerDay":  12000,
+                      "seats":  5,
+                      "transmission":  "Auto",
+                      "location":  "kozhikode",
+                      "category":  "Luxury",
+                      "image":  "car-1775111537453-570996820.jpeg",
+                      "gallery":  [
+                                      "car-1775111537462-315769511.jpeg",
+                                      "car-1775111537469-288243478.jpeg"
+                                  ],
+                      "selfDrive":  false,
+                      "withDriver":  true,
+                      "isAvailable":  true,
+                      "rating":  4.5,
+                      "ownerId":  "69cdf821b00baeef6f478484",
+                      "description":  "The BMW M3 Competition is a high-performance luxury sports sedan that blends aggressive design, cutting-edge technology, and track-level performance. Built by BMW’s M division, it represents the perfect balance between everyday usability and racing DNA.",
+                      "features":  [
+                                       "Premium Sound",
+                                       "360 Camera",
+                                       "Sunroof"
+                                   ],
+                      "__v":  0
+                  },
+                  {
+                      "specifications":  {
+                                             "fuelType":  "Petrol",
+                                             "engine":  "",
+                                             "hp":  null,
+                                             "topSpeed":  null,
+                                             "acceleration":  ""
+                                         },
+                      "_id":  "69ce10ba8b9d9a71e39201b6",
+                      "name":  "bmw",
+                      "model":  "m3 competion",
+                      "year":  2012,
+                      "pricePerDay":  12000,
+                      "seats":  5,
+                      "transmission":  "Auto",
+                      "location":  "kozhikode",
+                      "category":  "Luxury",
+                      "image":  "car-1775112378529-685517068.jpeg",
+                      "gallery":  [
+                                      "car-1775112378534-424622436.jpeg",
+                                      "car-1775112378536-548518695.jpeg"
+                                  ],
+                      "selfDrive":  false,
+                      "withDriver":  true,
+                      "isAvailable":  true,
+                      "rating":  4.5,
+                      "ownerId":  "69cdf821b00baeef6f478484",
+                      "description":  "The BMW M3 Competition is a high-performance luxury sports sedan that blends aggressive design, advanced technology, and track-ready power. It’s part of BMW’s iconic M series, built for driving enthusiasts who want both speed and everyday usability.",
+                      "features":  [
+                                       "Sunroof",
+                                       "Premium Sound",
+                                       "360 Camera"
+                                   ],
+                      "__v":  0
+                  }
+              ],
+    "Count":  39
+}
