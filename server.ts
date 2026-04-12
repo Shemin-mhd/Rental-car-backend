@@ -12,6 +12,7 @@ import routes from "./src/routes/index"; // central routes
 import { Server } from "socket.io";
 import { createServer } from "http";
 import { initCronJobs } from "./src/utils/cronJobs";
+import { initChatSocket } from "./src/socket/chatSocket";
 
 const app = express();
 const httpServer = createServer(app);
@@ -25,21 +26,8 @@ const io = new Server(httpServer, {
 // ✅ Export io for use in controllers
 (global as any).io = io;
 
-io.on("connection", (socket) => {
-  console.log("Client connected to WebSocket 🛰️");
-  
-  socket.on("join", (room) => {
-    socket.join(room);
-    console.log(`User joined room: ${room} 🛡️`);
-    if (room === "admin-channel") {
-      console.log("Admin Dashboard Connected to Alert System 🔱");
-    }
-  });
-
-  socket.on("disconnect", () => {
-    console.log("Client disconnected 🔌");
-  });
-});
+// 🔱 Initialize Specialized Socket Protocols
+initChatSocket(io);
 
 // ✅ middleware
 app.use(cors());
@@ -49,10 +37,15 @@ app.use("/uploads", express.static("uploads")); // Allow public access to upload
 
 
 // ✅ connect database
-connectDB();
-
-// 🔱 Initialize Elite Fleet Monitoring
-initCronJobs();
+(async () => {
+    try {
+        await connectDB();
+        // 🔱 Initialize Elite Fleet Monitoring
+        initCronJobs();
+    } catch (error) {
+        console.error("Critical Connection Failure:", error);
+    }
+})();
 
 // ✅ routes
 app.use("/api", routes);

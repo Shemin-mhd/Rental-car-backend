@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import Car from "../models/cars";
 import Booking from "../models/bookings";
+import cloudinary from "../config/cloudinary";
+import fs from "fs";
 
 // 🚗 Get All Cars (with advanced filtering)
 export const getCars = async (req: Request, res: Response) => {
@@ -35,6 +37,9 @@ export const getCars = async (req: Request, res: Response) => {
             filter._id = { $nin: bookedCarIds };
         }
 
+        // 🚨 CRITICAL: Only show Admin-approved vehicles
+        filter.status = "APPROVED";
+
         const cars = await Car.find(filter);
         res.json(cars);
     } catch (error: any) {
@@ -67,33 +72,82 @@ export const getCarById = async (req: Request, res: Response) => {
     }
 };
 
-// 🔱 Admin: Add New Car
+// 🚗 Helper: Upload to Cloudinary with Local Fallback
+const uploadToCloudinary = async (file: Express.Multer.File) => {
+    try {
+        // If Cloudinary is not configured, skip and use local path
+        if (!process.env.CLOUDINARY_CLOUD_NAME || !process.env.CLOUDINARY_API_KEY || !process.env.CLOUDINARY_API_SECRET) {
+            console.warn("Cloudinary not configured. Using local fallback.");
+            return file.filename;
+        }
+
+        const result = await cloudinary.uploader.upload(file.path, {
+            folder: "elite-fleet",
+        });
+        // Delete local file after upload to Cloudinary
+        if (fs.existsSync(file.path)) fs.unlinkSync(file.path);
+        return result.secure_url;
+    } catch (error) {
+        console.error("Cloudinary Upload Error:", error);
+        // Fallback to local filename if upload fails
+        return file.filename;
+    }
+};
+
+// 🔱 Admin/Host: Add New Car
 export const addCar = async (req: Request, res: Response) => {
     try {
         const { name, model, year, pricePerDay, seats, transmission, location, category, selfDrive, withDriver, ownerId, fuelType, engine, hp, topSpeed, acceleration, description, features } = req.body;
-
+        
         const files = req.files as { [fieldname: string]: Express.Multer.File[] };
-        const image = files?.['image']?.[0]?.filename;
-        const gallery = files?.['gallery']?.map(f => f.filename) || [];
+        
+        let mainImage = "";
+        let galleryUrls: string[] = [];
+        let rcFrontUrl = "";
+        let rcBackUrl = "";
 
-        const parsedFeatures = typeof features === "string" ? JSON.parse(features) : features;
+        // 🖼️ Process Images
+        if (files?.image?.[0]) {
+            mainImage = await uploadToCloudinary(files.image[0]);
+        }
+        if (files?.gallery) {
+            for (const file of files.gallery) {
+                const url = await uploadToCloudinary(file);
+                galleryUrls.push(url);
+            }
+        }
 
-        if (!image) return res.status(400).json({ message: "Vehicle high-definition image is required for catalog" });
+        // 🛡️ Process Documents
+        if (files?.rcFront?.[0]) rcFrontUrl = await uploadToCloudinary(files.rcFront[0]);
+        if (files?.rcBack?.[0]) rcBackUrl = await uploadToCloudinary(files.rcBack[0]);
 
-        // If ownerId is provided in body (Admin action) use it, otherwise use current user (Customer action)
-        const finalOwnerId = ownerId || (req as any).user?.id;
+        if (!mainImage) return res.status(400).json({ message: "Primary car image is mandatory" });
+        if (!rcFrontUrl || !rcBackUrl) return res.status(400).json({ message: "Both RC Book FRONT and BACK images are mandatory" });
 
         const newCar = new Car({
-            name, model, year, pricePerDay, seats, transmission, location, category, selfDrive, withDriver, image, gallery, ownerId: finalOwnerId,
+            name,
+            model,
+            year,
+            pricePerDay,
+            seats,
+            transmission,
+            location,
+            category,
+            image: mainImage,
+            gallery: galleryUrls,
+            selfDrive: selfDrive === "true",
+            withDriver: withDriver === "true",
+            ownerId: ownerId || (req as any).user.id,
+            status: "PENDING", 
+            rcFrontUrl,
+            rcBackUrl,
+            specifications: { fuelType, engine, hp, topSpeed, acceleration },
             description,
-            features: parsedFeatures,
-            specifications: {
-                fuelType, engine, hp, topSpeed, acceleration
-            }
+            features: JSON.parse(features || "[]")
         });
 
         await newCar.save();
-        res.status(201).json({ message: "Elite Vehicle Commissioned Successfully!", car: newCar });
+        res.status(201).json({ message: "Car listed and pending registration audit 🔱", car: newCar });
     } catch (error: any) {
         res.status(500).json({ message: error.message });
     }
@@ -115,11 +169,21 @@ export const updateCar = async (req: Request, res: Response) => {
         }
 
         const files = req.files as { [fieldname: string]: Express.Multer.File[] };
+
+        // 🚀 Update Primary Image on Cloudinary
         if (files?.['image']?.[0]) {
-            updateData.image = files['image'][0].filename;
+            const uploadedUrl = await uploadToCloudinary(files['image'][0]);
+            if (uploadedUrl) updateData.image = uploadedUrl;
         }
+
+        // 🚀 Update Gallery Images on Cloudinary
         if (files?.['gallery']) {
-            updateData.gallery = files['gallery'].map(f => f.filename);
+            const gallery: string[] = [];
+            for (const file of files['gallery']) {
+                const uploadedUrl = await uploadToCloudinary(file);
+                if (uploadedUrl) gallery.push(uploadedUrl);
+            }
+            updateData.gallery = gallery;
         }
 
         if (features) {

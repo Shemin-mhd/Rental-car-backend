@@ -4,8 +4,9 @@ import User from '../models/users';
 import dotenv from 'dotenv';
 import path from 'path';
 
-// dotenv logic matches server.js
-dotenv.config({ path: "./src/.env" });
+// dotenv logic matches server.ts
+dotenv.config();
+
 
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID || "",

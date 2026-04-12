@@ -1,16 +1,33 @@
-import express, { Request, Response, NextFunction } from "express";
+import express from "express";
 import { register, login, refreshToken, logout, googleAuthCallback } from "../controllers/authController";
+import { uploadUserDocs, getUserStatus } from "../controllers/userController";
 import User from "../models/users";
 import bcrypt from "bcryptjs";
 import { authenticate } from "../middleware/authMiddleware";
 import passport from "../config/passport";
+import multer from "multer";
+import path from "path";
 
 const router = express.Router();
+
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => cb(null, "uploads/"),
+    filename: (req, file, cb) => cb(null, "user-" + Date.now() + path.extname(file.originalname))
+});
+const upload = multer({ storage });
+const userDocUpload = upload.fields([
+    { name: "licenseFront", maxCount: 1 },
+    { name: "licenseBack", maxCount: 1 }
+]);
 
 router.post("/register", register);
 router.post("/login", login);
 router.post("/refresh-token", refreshToken);
 router.post("/logout", authenticate, logout);
+
+// Identity Verification
+router.get("/status", authenticate, getUserStatus);
+router.post("/upload-docs", authenticate, userDocUpload, uploadUserDocs);
 
 // 🔱 Google OAuth Routes
 router.get("/google", (req: Request, res: Response, next: NextFunction) => {

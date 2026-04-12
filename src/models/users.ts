@@ -7,6 +7,10 @@ export interface IUser {
   password?: string;
   role: "user" | "customer" | "admin";
   refreshToken: string | null;
+  licenseFrontUrl?: string;
+  licenseBackUrl?: string;
+  verificationStatus: "PENDING" | "APPROVED" | "REJECTED";
+  rejectionReason?: string;
 }
 
 const userSchema: Schema<IUser> = new mongoose.Schema({
@@ -32,6 +36,14 @@ const userSchema: Schema<IUser> = new mongoose.Schema({
     type: String,
     default: null,
   },
+  licenseFrontUrl: { type: String, default: "" },
+  licenseBackUrl: { type: String, default: "" },
+  verificationStatus: {
+    type: String,
+    enum: ["PENDING", "APPROVED", "REJECTED"],
+    default: "PENDING"
+  },
+  rejectionReason: { type: String, default: "" },
 });
 
 const User: Model<IUser> = mongoose.model<IUser>("User", userSchema);

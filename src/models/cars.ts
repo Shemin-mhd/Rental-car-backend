@@ -25,6 +25,10 @@ export interface ICar {
   };
   description?: string;
   features?: string[];
+  rcFrontUrl?: string;
+  rcBackUrl?: string;
+  status: "PENDING" | "APPROVED" | "REJECTED";
+  rejectionReason?: string;
 }
 
 const carSchema: Schema<ICar> = new mongoose.Schema({
@@ -99,7 +103,15 @@ const carSchema: Schema<ICar> = new mongoose.Schema({
     acceleration: { type: String }
   },
   description: { type: String },
-  features: { type: [String], default: [] }
+  features: { type: [String], default: [] },
+  rcFrontUrl: { type: String, default: "" },
+  rcBackUrl: { type: String, default: "" },
+  status: { 
+    type: String, 
+    enum: ["PENDING", "APPROVED", "REJECTED"], 
+    default: "PENDING" 
+  },
+  rejectionReason: { type: String, default: "" }
 });
 
 const Car: Model<ICar> = mongoose.model<ICar>("Car", carSchema);

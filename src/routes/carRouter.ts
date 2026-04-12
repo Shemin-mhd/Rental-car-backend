@@ -19,7 +19,9 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 const carUpload = upload.fields([
   { name: "image", maxCount: 1 },
-  { name: "gallery", maxCount: 4 }
+  { name: "gallery", maxCount: 4 },
+  { name: "rcFront", maxCount: 1 },
+  { name: "rcBack", maxCount: 1 }
 ]);
 
 // 🚗 Fetch Car Listings

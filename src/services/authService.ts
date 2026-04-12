@@ -48,6 +48,7 @@ export const loginService = async ({ email, password }: any) => {
   const user = await User.findOne({ email });
 
   if (!user) throw new Error("User not found");
+  if (user.isBlocked) throw new Error("This account has been locked by administration 🔐");
   if (!user.password) throw new Error("This account uses social login");
 
   const isMatch = await bcrypt.compare(password, user.password);
@@ -89,6 +90,8 @@ export const refreshTokenService = async ({ token }: any) => {
     throw new Error("Invalid refresh token associated with user");
   }
 
+  if (user.isBlocked) throw new Error("Access revoked: Account locked 🔐");
+
   const newAccessToken = generateAccessToken(user);
 
   return { accessToken: newAccessToken };
@@ -111,6 +114,7 @@ export const logoutService = async ({ id }: any) => {
 export const googleAuthCallbackService = async (user: any) => {
   const dbUser = await User.findById((user as any)._id);
   if (!dbUser) throw new Error("User not found");
+  if (dbUser.isBlocked) throw new Error("Unauthorized: Account is under lockdown 🔓");
 
   const accessToken = generateAccessToken(dbUser);
   const refreshToken = generateRefreshToken(dbUser);

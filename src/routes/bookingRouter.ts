@@ -2,7 +2,7 @@ import express from "express";
 import multer from "multer";
 import path from "path";
 import { authenticate, authorizeRole } from "../middleware/authMiddleware";
-import { createBooking, confirmPayment, getPendingDocuments, updateDocumentStatus, getBooking, getUserBookings, deleteBooking } from "../controllers/bookingController";
+import { createBooking, confirmPayment, getPendingDocuments, updateDocumentStatus, getBooking, getUserBookings, deleteBooking, adminDeleteBooking } from "../controllers/bookingController";
 
 const router = express.Router();
 
@@ -15,7 +15,7 @@ router.delete("/:id", authenticate, deleteBooking);
 // Setup multer for document uploads
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "uploads/"); 
+    cb(null, "uploads/");
   },
   filename: (req, file, cb) => {
     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
@@ -43,5 +43,8 @@ router.get("/documents/pending", authenticate, authorizeRole("admin"), getPendin
 
 // 🔱 Admin approves or rejects a document
 router.patch("/:id/document-status", authenticate, authorizeRole("admin"), updateDocumentStatus);
+
+// 🔱 Admin: Void Transaction
+router.delete("/admin/:id", authenticate, authorizeRole("admin"), adminDeleteBooking);
 
 export default router;

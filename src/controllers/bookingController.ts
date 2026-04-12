@@ -1,7 +1,36 @@
 import { Request, Response } from "express";
 import Booking from "../models/bookings";
 import Car from "../models/cars";
+import User from "../models/users";
 import mongoose from "mongoose";
+import cloudinary from "../config/cloudinary";
+import fs from "fs";
+import path from "path";
+
+// 🚗 Helper: Upload to Cloudinary
+const uploadToCloudinary = async (filePath: string) => {
+    try {
+        // Fallback to local storage if Cloudinary is not configured
+        if (!process.env.CLOUDINARY_CLOUD_NAME || !process.env.CLOUDINARY_API_KEY) {
+            console.warn("[UPLOAD] Cloudinary credentials missing. Persisting file locally fallback.");
+            return path.basename(filePath);
+        }
+
+        const result = await cloudinary.uploader.upload(filePath, {
+            folder: "elite-documents",
+        });
+
+        // Only delete local file if Cloudinary upload succeeded
+        if (fs.existsSync(filePath)) {
+            fs.unlinkSync(filePath);
+        }
+        return result.secure_url;
+    } catch (error) {
+        console.error("Cloudinary Upload Error:", error);
+        // Fallback to local storage on error
+        return path.basename(filePath);
+    }
+};
 
 // Handler for creating a booking (used by User in confirmation page)
 export const createBooking = async (req: Request, res: Response) => {
@@ -10,8 +39,20 @@ export const createBooking = async (req: Request, res: Response) => {
         const { carId, startDate, endDate, bookingType, fullName, nomineeName, primaryPhone, secondaryPhone, address } = req.body;
 
         const files = req.files as { [fieldname: string]: Express.Multer.File[] };
-        const idFront = files?.idFront?.[0]?.filename;
-        const idBack = files?.idBack?.[0]?.filename;
+
+        // 🚀 Upload ID Proofs to Cloudinary
+        let idFront = "";
+        let idBack = "";
+
+        if (files?.idFront?.[0]) {
+            const uploadedUrl = await uploadToCloudinary(files.idFront[0].path);
+            if (uploadedUrl) idFront = uploadedUrl;
+        }
+
+        if (files?.idBack?.[0]) {
+            const uploadedUrl = await uploadToCloudinary(files.idBack[0].path);
+            if (uploadedUrl) idBack = uploadedUrl;
+        }
 
         if (!idFront || !idBack) {
             return res.status(400).json({ message: "Both Front and Back ID proofs are required" });
@@ -19,6 +60,15 @@ export const createBooking = async (req: Request, res: Response) => {
 
         const car = await Car.findById(carId);
         if (!car) return res.status(404).json({ message: "Car not found" });
+
+        // 🔱 Consolidate: Update User Profile with these documents
+        const user = await User.findById(userId);
+        if (user) {
+            user.licenseFrontUrl = idFront;
+            user.licenseBackUrl = idBack;
+            user.verificationStatus = "PENDING";
+            await user.save();
+        }
 
         const days = Math.max(1, Math.ceil((new Date(endDate).getTime() - new Date(startDate).getTime()) / (1000 * 3600 * 24)) + 1);
         const totalPrice = car.pricePerDay * days;
@@ -46,7 +96,7 @@ export const createBooking = async (req: Request, res: Response) => {
         // 🔱 Real-time Admin Notification
         const io = (global as any).io;
         if (io) {
-            io.to("admin-channel").emit("newBookingSubmitted", { 
+            io.to("admin-channel").emit("newBookingSubmitted", {
                 bookingId: newBooking._id,
                 fullName: newBooking.fullName,
                 carName: (newBooking as any).carId?.name || "Premium Rental"
@@ -65,7 +115,7 @@ export const confirmPayment = async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
         const booking = await Booking.findById(id);
-        
+
         if (!booking) {
             return res.status(404).json({ message: "Booking not found" });
         }
@@ -89,7 +139,7 @@ export const getBooking = async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
         const booking = await Booking.findById(id).populate("carId");
-        
+
         if (!booking) {
             return res.status(404).json({ message: "Booking not found" });
         }
@@ -106,7 +156,7 @@ export const getPendingDocuments = async (req: Request, res: Response) => {
         const bookings = await Booking.find({ documentStatus: "Pending" })
             .populate("carId", "name model")
             .populate("userId", "name email");
-        
+
         res.json(bookings);
     } catch (error: any) {
         res.status(500).json({ message: error.message });
@@ -127,12 +177,12 @@ export const updateDocumentStatus = async (req: Request, res: Response) => {
         if (!booking) return res.status(404).json({ message: "Booking not found" });
 
         booking.documentStatus = status;
-        
+
         // If rejected, we might also want to cancel the booking
         if (status === "Rejected") {
             booking.status = "Cancelled";
         }
-        
+
         await booking.save();
 
         // 🛰️ Real-time Sync-Bridge
@@ -181,5 +231,16 @@ export const deleteBooking = async (req: Request, res: Response) => {
         res.json({ message: "Reservation scrubbed from active registry 🛡️" });
     } catch (error: any) {
         res.status(500).json({ message: error.message });
+    }
+};
+
+// ?? Admin: Void Transaction - Delete ANY booking
+export const adminDeleteBooking = async (req: Request, res: Response) => {
+    try {
+        const { id } = req.params;
+        await Booking.findByIdAndDelete(id);
+        res.json({ message: 'Transaction voided and scrubbed ???' });
+    } catch (error) {
+        res.status(500).json({ message: 'Error voiding transaction' });
     }
 };
