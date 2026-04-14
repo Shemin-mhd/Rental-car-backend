@@ -6,9 +6,9 @@ export interface IBooking {
     startDate: Date;
     endDate: Date;
     totalPrice: number;
-    status: "Pending" | "Confirmed" | "Cancelled" | "Completed";
-    
-    bookingType: "self" | "driver";
+    status: "Pending" | "Confirmed" | "upcoming_pickup" | "arrived" | "active_trip" | "Cancelled" | "Completed";
+    pickupLocation?: string;
+
     fullName: string;
     nomineeName: string;
     primaryPhone: string;
@@ -29,9 +29,9 @@ const bookingSchema: Schema<IBooking> = new mongoose.Schema({
     startDate: { type: Date, required: true },
     endDate: { type: Date, required: true },
     totalPrice: { type: Number, required: true },
-    status: { type: String, enum: ["Pending", "Confirmed", "Cancelled", "Completed"], default: "Pending" },
-    
-    bookingType: { type: String, enum: ["self", "driver"], default: "self" },
+    status: { type: String, enum: ["Pending", "Confirmed", "upcoming_pickup", "arrived", "active_trip", "Cancelled", "Completed"], default: "Pending" },
+    pickupLocation: { type: String, default: "" },
+
     fullName: { type: String, required: true },
     nomineeName: { type: String, required: true },
     primaryPhone: { type: String, required: true },

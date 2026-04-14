@@ -36,7 +36,7 @@ const uploadToCloudinary = async (filePath: string) => {
 export const createBooking = async (req: Request, res: Response) => {
     try {
         const userId = (req as any).user.id;
-        const { carId, startDate, endDate, bookingType, fullName, nomineeName, primaryPhone, secondaryPhone, address } = req.body;
+        const { carId, startDate, endDate, fullName, nomineeName, primaryPhone, secondaryPhone, address } = req.body;
 
         const files = req.files as { [fieldname: string]: Express.Multer.File[] };
 
@@ -70,7 +70,7 @@ export const createBooking = async (req: Request, res: Response) => {
             await user.save();
         }
 
-        const days = Math.max(1, Math.ceil((new Date(endDate).getTime() - new Date(startDate).getTime()) / (1000 * 3600 * 24)) + 1);
+        const days = Math.max(1, Math.ceil((new Date(endDate).getTime() - new Date(startDate).getTime()) / (1000 * 3600 * 24)));
         const totalPrice = car.pricePerDay * days;
 
         const newBooking = new Booking({
@@ -79,7 +79,6 @@ export const createBooking = async (req: Request, res: Response) => {
             startDate,
             endDate,
             totalPrice,
-            bookingType,
             fullName,
             nomineeName,
             primaryPhone,
@@ -88,7 +87,8 @@ export const createBooking = async (req: Request, res: Response) => {
             idFront,
             idBack,
             status: "Pending", // Pending payment
-            documentStatus: "Pending" // Pending admin approval
+            documentStatus: "Pending", // Pending admin approval
+            pickupLocation: car.location || ""
         });
 
         await newBooking.save();
@@ -127,6 +127,12 @@ export const confirmPayment = async (req: Request, res: Response) => {
 
         booking.status = "Confirmed";
         await booking.save();
+
+        // 🔱 Elite Fleet Update: Mark car as Booked
+        await Car.findByIdAndUpdate(booking.carId, {
+            isAvailable: false,
+            availableFrom: booking.endDate
+        });
 
         res.json({ message: "Payment successful, booking confirmed", booking });
     } catch (error: any) {
@@ -242,5 +248,134 @@ export const adminDeleteBooking = async (req: Request, res: Response) => {
         res.json({ message: 'Transaction voided and scrubbed ???' });
     } catch (error) {
         res.status(500).json({ message: 'Error voiding transaction' });
+    }
+};
+
+// 🚗 User: Mark as Arrived at Pickup
+export const markArrived = async (req: Request, res: Response) => {
+    try {
+        const userId = (req as any).user.id;
+        const { id } = req.params;
+
+        const booking = await Booking.findOne({ _id: id, userId }).populate("carId", "name ownerId");
+        if (!booking) return res.status(404).json({ message: "Booking not found" });
+
+        const allowedStatuses = ["Confirmed", "upcoming_pickup"];
+        if (!allowedStatuses.includes(booking.status)) {
+            return res.status(400).json({ message: `Cannot mark arrival for booking with status: ${booking.status}` });
+        }
+
+        booking.status = "arrived";
+        await booking.save();
+
+        // 🛰️ Notify host in real-time
+        const io = (global as any).io;
+        const car = booking.carId as any;
+        if (io && car?.ownerId) {
+            io.to(`user-${car.ownerId.toString()}`).emit("customerArrived", {
+                bookingId: id,
+                message: `Customer has arrived for pickup of ${car.name}`,
+                fullName: booking.fullName,
+            });
+        }
+        // Also emit to booking room for real-time status update on user side
+        if (io) {
+            io.to(id).emit("bookingStatusUpdate", { bookingId: id, status: "arrived" });
+        }
+
+        res.json({ message: "Arrival confirmed. Host has been notified.", status: "arrived" });
+    } catch (error: any) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+// 🔑 Host: Confirm Car Handover → start the trip
+export const markHandedOver = async (req: Request, res: Response) => {
+    try {
+        const hostId = (req as any).user.id;
+        const { id } = req.params;
+
+        // Find the booking and make sure the car belongs to this host
+        const booking = await Booking.findById(id).populate("carId", "name ownerId");
+        if (!booking) return res.status(404).json({ message: "Booking not found" });
+
+        const car = booking.carId as any;
+        if (car?.ownerId?.toString() !== hostId) {
+            return res.status(403).json({ message: "You are not the owner of this car" });
+        }
+
+        if (booking.status !== "arrived") {
+            return res.status(400).json({ message: `Car can only be handed over when customer has arrived. Current status: ${booking.status}` });
+        }
+
+        booking.status = "active_trip";
+        await booking.save();
+
+        // 🛰️ Notify user in real-time
+        const io = (global as any).io;
+        if (io) {
+            io.to(`user-${booking.userId.toString()}`).emit("tripStarted", {
+                bookingId: id,
+                message: `Your trip has started! Enjoy the drive — ${car.name} is yours.`,
+            });
+            // Emit to booking room too
+            io.to(id).emit("bookingStatusUpdate", { bookingId: id, status: "active_trip" });
+        }
+
+        res.json({ message: "Car handed over. Trip is now active.", status: "active_trip" });
+    } catch (error: any) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+// 🔱 Host: Get bookings for cars owned by this host
+export const getHostBookings = async (req: Request, res: Response) => {
+    try {
+        const hostId = (req as any).user.id;
+        const Car = require("../models/cars").default;
+        const hostCars = await Car.find({ ownerId: hostId }).select("_id");
+        const carIds = hostCars.map((c: any) => c._id);
+
+        const bookings = await Booking.find({ carId: { $in: carIds } })
+            .populate("carId", "name model image location")
+            .populate("userId", "name email")
+            .sort({ createdAt: -1 });
+
+        res.json(bookings);
+    } catch (error: any) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+// 🛰️ Telemetry Uplink: Handles real-time location pulses from units
+export const updateLocation = async (req: Request, res: Response) => {
+    try {
+        const { id } = req.params;
+        const { lat, lng, speed } = req.body;
+
+        const booking = await Booking.findById(id);
+        if (!booking) return res.status(404).json({ message: "Mission record not found." });
+
+        // 🔱 Update Asset Position in tactical registry
+        await Car.findByIdAndUpdate(booking.carId, { 
+            lat, 
+            lng,
+            availableFrom: new Date() // Keeps car "active" in registry
+        });
+
+        // 🛰️ Broadcast to Operational Theater (Intercept Page)
+        const io = (global as any).io;
+        if (io) {
+            io.to(`mission-${id}`).emit("locationUpdate", {
+                lat,
+                lng,
+                speed: speed || 0,
+                timestamp: new Date()
+            });
+        }
+
+        res.json({ message: "Telemetry Link Stable", status: "Synchronized" });
+    } catch (error: any) {
+        res.status(500).json({ message: error.message });
     }
 };

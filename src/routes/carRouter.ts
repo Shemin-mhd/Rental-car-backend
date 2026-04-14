@@ -36,6 +36,7 @@ router.post("/host/listing", authenticate, authorizeRole("customer"), carUpload,
 
 // 🔱 Admin/Customer: Manage Global Fleet
 router.post("/", authenticate, authorizeRole("admin"), carUpload, addCar);
+router.put("/:id", authenticate, authorizeRole("admin", "customer"), carUpload, updateCar);
 router.patch("/:id", authenticate, authorizeRole("admin", "customer"), carUpload, updateCar);
 router.delete("/:id", authenticate, authorizeRole("admin", "customer"), deleteCar);
 

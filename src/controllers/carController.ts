@@ -7,15 +7,12 @@ import fs from "fs";
 // 🚗 Get All Cars (with advanced filtering)
 export const getCars = async (req: Request, res: Response) => {
     try {
-        const { category, location, type }: any = req.query; // type can be 'self' or 'driver'
+        const { category, location }: any = req.query;
         const filter: any = {};
 
         if (category && category !== "All") filter.category = category;
         if (location && location !== "All") filter.location = new RegExp(location, "i");
 
-        // Handle Booking Type (Self Drive vs With Driver)
-        if (type === "self") filter.selfDrive = true;
-        if (type === "driver") filter.withDriver = true;
 
         // Handle Date-Based Availability Filtering
         const { start, end }: any = req.query;
@@ -40,8 +37,35 @@ export const getCars = async (req: Request, res: Response) => {
         // 🚨 CRITICAL: Only show Admin-approved vehicles
         filter.status = "APPROVED";
 
-        const cars = await Car.find(filter);
-        res.json(cars);
+        let cars = await Car.find(filter).populate("ownerId", "name role").lean();
+        const now = new Date();
+        const carIds = cars.map(c => c._id);
+
+        // 🚀 Optimization: Batch fetch all relevant bookings in ONE query
+        const allRelevantBookings = await Booking.find({
+            carId: { $in: carIds },
+            status: "Confirmed",
+            endDate: { $gte: now }
+        }).sort({ endDate: -1 }).lean();
+
+        // Create a lookup map for instant access
+        const bookingMap: Record<string, any> = {};
+        allRelevantBookings.forEach(b => {
+            const cid = b.carId.toString();
+            if (!bookingMap[cid]) bookingMap[cid] = b; 
+        });
+
+        // 🔱 Real-time Availability Injector (Optimized Processor)
+        const processedCars = cars.map((car: any) => {
+            const relevantBooking = bookingMap[car._id.toString()];
+            return {
+                ...car,
+                isAvailable: relevantBooking ? false : car.isAvailable,
+                availableFrom: relevantBooking ? relevantBooking.endDate : (car.availableFrom || now)
+            };
+        });
+
+        res.json(processedCars);
     } catch (error: any) {
         res.status(500).json({ message: error.message });
     }
@@ -51,8 +75,33 @@ export const getCars = async (req: Request, res: Response) => {
 export const getOwnerCars = async (req: Request, res: Response) => {
     try {
         const ownerId = (req as any).user.id;
-        const cars = await Car.find({ ownerId });
-        res.json(cars);
+        const cars = await Car.find({ ownerId }).lean();
+        const now = new Date();
+        const carIds = cars.map(c => c._id);
+
+        // 🚀 Batch fetch active bookings
+        const allRelevantBookings = await Booking.find({
+            carId: { $in: carIds },
+            status: { $in: ["Confirmed", "upcoming_pickup", "arrived", "active_trip"] },
+            endDate: { $gte: now }
+        }).sort({ endDate: -1 }).lean();
+
+        const bookingMap: Record<string, any> = {};
+        allRelevantBookings.forEach(b => {
+            const cid = b.carId.toString();
+            if (!bookingMap[cid]) bookingMap[cid] = b; 
+        });
+
+        const processedCars = cars.map((car: any) => {
+            const relevantBooking = bookingMap[car._id.toString()];
+            return {
+                ...car,
+                isAvailable: relevantBooking ? false : car.isAvailable,
+                availableFrom: relevantBooking ? relevantBooking.endDate : car.availableFrom
+            };
+        });
+
+        res.json(processedCars);
     } catch (error: any) {
         res.status(500).json({ message: error.message });
     }
@@ -62,11 +111,25 @@ export const getOwnerCars = async (req: Request, res: Response) => {
 export const getCarById = async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
-        const car = await Car.findById(id);
+        const car = await Car.findById(id).lean();
         if (!car) {
             return res.status(404).json({ message: "Car not found" });
         }
-        res.json(car);
+
+        const now = new Date();
+        const relevantBooking = await Booking.findOne({
+            carId: car._id,
+            status: "Confirmed",
+            endDate: { $gte: now }
+        }).sort({ endDate: -1 });
+
+        const updatedCar = {
+            ...car,
+            isAvailable: relevantBooking ? false : car.isAvailable,
+            availableFrom: relevantBooking ? relevantBooking.endDate : (car.availableFrom || now)
+        };
+
+        res.json(updatedCar);
     } catch (error: any) {
         res.status(500).json({ message: error.message });
     }
@@ -97,10 +160,10 @@ const uploadToCloudinary = async (file: Express.Multer.File) => {
 // 🔱 Admin/Host: Add New Car
 export const addCar = async (req: Request, res: Response) => {
     try {
-        const { name, model, year, pricePerDay, seats, transmission, location, category, selfDrive, withDriver, ownerId, fuelType, engine, hp, topSpeed, acceleration, description, features } = req.body;
-        
+        const { name, model, year, pricePerDay, seats, transmission, location, category, ownerId, fuelType, engine, hp, topSpeed, acceleration, description, features } = req.body;
+
         const files = req.files as { [fieldname: string]: Express.Multer.File[] };
-        
+
         let mainImage = "";
         let galleryUrls: string[] = [];
         let rcFrontUrl = "";
@@ -135,10 +198,8 @@ export const addCar = async (req: Request, res: Response) => {
             category,
             image: mainImage,
             gallery: galleryUrls,
-            selfDrive: selfDrive === "true",
-            withDriver: withDriver === "true",
             ownerId: ownerId || (req as any).user.id,
-            status: "PENDING", 
+            status: "PENDING",
             rcFrontUrl,
             rcBackUrl,
             specifications: { fuelType, engine, hp, topSpeed, acceleration },
@@ -203,6 +264,19 @@ export const updateCar = async (req: Request, res: Response) => {
         }
 
         const updatedCar = await Car.findByIdAndUpdate(id, updateData, { new: true });
+
+        // 🛰️ Real-time Location Uplink Broadcast
+        if (updateData.lat || updateData.lng) {
+            const io = (global as any).io;
+            if (io) {
+                io.emit("locationUpdate", {
+                    carId: id,
+                    lat: updatedCar?.lat,
+                    lng: updatedCar?.lng
+                });
+            }
+        }
+
         res.json({ message: "Fleet Specifications Updated 🧬", car: updatedCar });
     } catch (error: any) {
         res.status(500).json({ message: error.message });

@@ -73,7 +73,10 @@ export const verifyPayment = async (req: Request, res: Response) => {
         await booking.save();
 
         // 🔱 Elite Fleet Update: Mark car as Booked
-        await Car.findByIdAndUpdate(booking.carId, { isAvailable: false });
+        await Car.findByIdAndUpdate(booking.carId, { 
+            isAvailable: false,
+            availableFrom: booking.endDate
+        });
 
         res.json({ message: "Transaction authorized. Fleet access granted.", status: "Confirmed" });
     } catch (error: any) {

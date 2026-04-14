@@ -13,6 +13,7 @@ import { Server } from "socket.io";
 import { createServer } from "http";
 import { initCronJobs } from "./src/utils/cronJobs";
 import { initChatSocket } from "./src/socket/chatSocket";
+import { initFleetSocket } from "./src/socket/fleetSocket";
 
 const app = express();
 const httpServer = createServer(app);
@@ -28,6 +29,7 @@ const io = new Server(httpServer, {
 
 // 🔱 Initialize Specialized Socket Protocols
 initChatSocket(io);
+initFleetSocket(io);
 
 // ✅ middleware
 app.use(cors());
@@ -38,13 +40,13 @@ app.use("/uploads", express.static("uploads")); // Allow public access to upload
 
 // ✅ connect database
 (async () => {
-    try {
-        await connectDB();
-        // 🔱 Initialize Elite Fleet Monitoring
-        initCronJobs();
-    } catch (error) {
-        console.error("Critical Connection Failure:", error);
-    }
+  try {
+    await connectDB();
+    // 🔱 Initialize Elite Fleet Monitoring
+    initCronJobs();
+  } catch (error) {
+    console.error("Critical Connection Failure:", error);
+  }
 })();
 
 // ✅ routes

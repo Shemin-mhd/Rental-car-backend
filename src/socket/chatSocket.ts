@@ -14,6 +14,12 @@ export const initChatSocket = (io: Server) => {
       io.emit("user-status-change", { userId, status: "online" });
     });
 
+    // 🔱 Join personal notification room (user-{userId})
+    socket.on("join-user-room", (userId: string) => {
+      socket.join(`user-${userId}`);
+      console.log(`🔔 Notification Room: user-${userId} joined`);
+    });
+
     // 🔱 Thread Synchronize: Join specific booking room
     socket.on("join-chat", (chatId: string) => {
       socket.join(chatId);
@@ -76,40 +82,6 @@ export const initChatSocket = (io: Server) => {
 
     socket.on("stop-typing", ({ chatId, userId }: { chatId: string, userId: string }) => {
       socket.to(chatId).emit("user-stop-typing", { userId });
-    });
-
-    // 🏎️ Tactical Telemetry: Live Location Tracking
-    socket.on("update-car-location", (data: {
-      carId: string,
-      carName: string,
-      lat: number,
-      lng: number,
-      bookingId?: string
-    }) => {
-      const { carId, carName, lat, lng } = data;
-      console.log(`📍 [TELEMETRY] Car ${carName} localized at ${lat}, ${lng}`);
-      
-      // Broadcast to the car-specific room with Identity Markers
-      io.to(`track-${carId}`).emit("car-location-updated", { 
-        carId, 
-        carName, 
-        lat, 
-        lng, 
-        timestamp: new Date() 
-      });
-      
-      // Also broadcast to the Global Admin Channel
-      io.to("admin-channel").emit("global-car-movement", { 
-        carId, 
-        carName, 
-        lat, 
-        lng 
-      });
-    });
-
-    socket.on("join-tracking", (carId: string) => {
-      socket.join(`track-${carId}`);
-      console.log(`📡 [TRACKING] Socket ${socket.id} subscribed to Car ${carId} telemetry`);
     });
 
     // 🔱 Protocol Eject: Cleanup

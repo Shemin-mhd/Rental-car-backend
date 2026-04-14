@@ -11,9 +11,10 @@ export interface ICar {
   category: "All" | "Wedding" | "Luxury" | "Family" | "SUV" | "Vintage";
   image: string;
   gallery?: string[];
-  selfDrive: boolean;
-  withDriver: boolean;
   isAvailable: boolean;
+  isAdminFleet: boolean;
+  lat?: number;
+  lng?: number;
   rating: number;
   ownerId?: mongoose.Schema.Types.ObjectId;
   specifications: {
@@ -29,9 +30,13 @@ export interface ICar {
   rcBackUrl?: string;
   status: "PENDING" | "APPROVED" | "REJECTED";
   rejectionReason?: string;
+  availableFrom?: Date;
 }
 
 const carSchema: Schema<ICar> = new mongoose.Schema({
+  isAdminFleet: { type: Boolean, default: false },
+  lat: { type: Number, default: 10.0081 },
+  lng: { type: Number, default: 76.3217 },
   name: {
     type: String,
     required: true,
@@ -74,14 +79,6 @@ const carSchema: Schema<ICar> = new mongoose.Schema({
     type: [String],
     default: [],
   },
-  selfDrive: {
-    type: Boolean,
-    default: true,
-  },
-  withDriver: {
-    type: Boolean,
-    default: true,
-  },
   isAvailable: {
     type: Boolean,
     default: true,
@@ -106,12 +103,13 @@ const carSchema: Schema<ICar> = new mongoose.Schema({
   features: { type: [String], default: [] },
   rcFrontUrl: { type: String, default: "" },
   rcBackUrl: { type: String, default: "" },
-  status: { 
-    type: String, 
-    enum: ["PENDING", "APPROVED", "REJECTED"], 
-    default: "PENDING" 
+  status: {
+    type: String,
+    enum: ["PENDING", "APPROVED", "REJECTED"],
+    default: "PENDING"
   },
-  rejectionReason: { type: String, default: "" }
+  rejectionReason: { type: String, default: "" },
+  availableFrom: { type: Date, default: Date.now }
 });
 
 const Car: Model<ICar> = mongoose.model<ICar>("Car", carSchema);
