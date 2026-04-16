@@ -11,7 +11,7 @@ dotenv.config();
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID || "",
     clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
-    callbackURL: process.env.GOOGLE_CALLBACK_URL || "http://localhost:5000/api/auth/google/callback",
+    callbackURL: process.env.GOOGLE_CALLBACK_URL || "http://https://rental-car-backend-7np6.onrender.com/api/auth/google/callback",
     passReqToCallback: true // ✅ Pass req to callback to access state
   },
   async (req: any, accessToken: string, refreshToken: string, profile: any, done: any) => {

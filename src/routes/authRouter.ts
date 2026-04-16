@@ -45,7 +45,7 @@ router.get("/google", (req: Request, res: Response, next: NextFunction) => {
 });
 
 router.get("/google/callback", (req, res, next) => {
-    const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:3005";
+    const FRONTEND_URL = process.env.FRONTEND_URL || "https://rental-car-lake.vercel.app/login";
     passport.authenticate("google", { 
         session: false, 
         failureRedirect: `${FRONTEND_URL}/login?error=Google auth failed` 
