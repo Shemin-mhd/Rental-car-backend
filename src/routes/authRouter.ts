@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Request, Response, NextFunction } from "express";
 import { register, login, refreshToken, logout, googleAuthCallback } from "../controllers/authController";
 import { uploadUserDocs, getUserStatus } from "../controllers/userController";
 import User from "../models/users";

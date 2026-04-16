@@ -19,7 +19,7 @@ const app = express();
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
   cors: {
-    origin: ["http://localhost:3005"], // Adjust depending on frontend URL
+    origin: ["https://rental-car-kpsl.vercel.app"], // Adjust depending on frontend URL
     methods: ["GET", "POST"]
   }
 });

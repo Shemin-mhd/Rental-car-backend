@@ -11,6 +11,7 @@ export interface IUser {
   licenseBackUrl?: string;
   verificationStatus: "PENDING" | "APPROVED" | "REJECTED";
   rejectionReason?: string;
+  isBlocked?: boolean;
 }
 
 const userSchema: Schema<IUser> = new mongoose.Schema({
