@@ -3,29 +3,74 @@ import Chat from "../models/chats";
 import Message from "../models/messages";
 import Booking from "../models/bookings";
 import User from "../models/users";
+import Car from "../models/cars";
 import mongoose from "mongoose";
 
 // 🔱 Create or Get existing chat for a booking
 export const createOrGetChat = async (req: Request, res: Response) => {
   try {
-    const { bookingId } = req.body;
+    const { bookingId, carId } = req.body;
     const userId = (req as any).user.id;
 
-    console.log(`📡 [CHAT_INIT] Attempting thread synchronization for Booking: ${bookingId} by User: ${userId}`);
+    console.log(`📡 [CHAT_INIT] Attempting thread synchronization. Booking: ${bookingId}, Car: ${carId} by User: ${userId}`);
 
-    // 1. Verify booking exists and user is a participant
-    const booking = await Booking.findById(bookingId).populate("carId");
-    if (!booking) {
-      console.error(`❌ [CHAT_INIT] Booking not found: ${bookingId}`);
-      return res.status(404).json({ message: "Booking protocol not found" });
+    let renterId = userId;
+    let hostId: string | undefined;
+    let targetBookingId = bookingId;
+    let targetCarId = carId;
+
+    if (bookingId) {
+      // 1. Verify booking exists and user is a participant
+      const booking = await Booking.findById(bookingId).populate("carId");
+      if (!booking) {
+        console.error(`❌ [CHAT_INIT] Booking not found: ${bookingId}`);
+        return res.status(404).json({ message: "Booking protocol not found" });
+      }
+
+      renterId = booking.userId?.toString();
+      hostId = (booking.carId as any)?.ownerId?.toString();
+      targetCarId = (booking.carId as any)?._id;
+
+      if (userId !== renterId && userId !== hostId) {
+        console.error(`❌ [CHAT_INIT] Authorization Breach: User ${userId} is not part of this booking`);
+        return res.status(403).json({ message: "Sovereign Override: Access Denied" });
+      }
+    } else if (carId) {
+      // 🔱 Car Inquiry Protocol
+      const car = await Car.findById(carId);
+      if (!car) {
+        console.error(`❌ [CHAT_INIT] Car Asset not found: ${carId}`);
+        return res.status(404).json({ message: "Asset not found in registry" });
+      }
+
+      // Explicitly check for Admin Fleet status
+      if (car.isAdminFleet) {
+        // Preference: if car has an owner who is an admin, they are the primary host
+        const owner = car.ownerId ? await User.findById(car.ownerId) : null;
+        if (owner && owner.role === "admin") {
+          hostId = owner._id.toString();
+          console.log(`📡 [CHAT_INIT] Admin Fleet: Assigned to car owner (Admin): ${hostId}`);
+        } else {
+          // Fallback: search for any platform admin
+          const admin = await User.findOne({ role: "admin" });
+          if (admin) {
+            hostId = admin._id.toString();
+            console.log(`📡 [CHAT_INIT] Admin Fleet: No admin owner, routing to system admin: ${hostId}`);
+          } else {
+            hostId = car.ownerId?.toString();
+          }
+        }
+      } else {
+        hostId = car.ownerId?.toString();
+      }
+      targetCarId = car._id.toString();
+    } else {
+      return res.status(400).json({ message: "Missing metadata for initialization" });
     }
-
-    const renterId = booking.userId?.toString();
-    let hostId = (booking.carId as any)?.ownerId?.toString();
 
     // 🔱 Admin Fallback Protocol: If no owner is assigned to the car, route to the first available platform admin
     if (!hostId) {
-      console.warn(`⚠️ [CHAT_INIT] Car ${booking.carId} has no owner. Searching for system admin fallback...`);
+      console.warn(`⚠️ [CHAT_INIT] Target has no owner. Searching for system admin fallback...`);
       const admin = await User.findOne({ role: "admin" });
       if (admin) {
         hostId = admin._id.toString();
@@ -33,25 +78,19 @@ export const createOrGetChat = async (req: Request, res: Response) => {
       }
     }
 
-    console.log(`📊 [CHAT_INIT] Extraction: RenterID=${renterId}, HostID=${hostId}`);
-
     if (!renterId || !hostId) {
-      console.error(`❌ [CHAT_INIT] Integrity Failure: Missing participant data. Renter=${renterId}, Host=${hostId}`);
       return res.status(400).json({ message: "Fleet Integrity Failure: Missing participant metadata" });
     }
 
-    if (userId !== renterId && userId !== hostId) {
-      console.error(`❌ [CHAT_INIT] Authorization Breach: User ${userId} is not part of this booking`);
-      return res.status(403).json({ message: "Sovereign Override: Access Denied" });
-    }
-
     // 2. Check if chat already exists
-    let chat = await Chat.findOne({ bookingId });
+    let query = bookingId ? { bookingId } : { renterId, hostId, carId, bookingId: { $exists: false } };
+    let chat = await Chat.findOne(query);
 
     if (!chat) {
-      console.log(`🔱 [CHAT_INIT] Creating new tactical thread for Booking: ${bookingId}`);
+      console.log(`🔱 [CHAT_INIT] Creating new tactical thread`);
       chat = await Chat.create({
-        bookingId,
+        bookingId: targetBookingId,
+        carId: targetCarId,
         renterId,
         hostId,
         participants: [renterId, hostId],
@@ -75,6 +114,7 @@ export const getUserChats = async (req: Request, res: Response) => {
     const chats = await Chat.find({ participants: userId })
       .populate("renterId", "name image")
       .populate("hostId", "name image")
+      .populate("carId", "name image location pricePerDay isAdminFleet")
       .populate({
         path: "bookingId",
         populate: { path: "carId", select: "name image" }
@@ -115,60 +155,60 @@ export const getMessages = async (req: Request, res: Response) => {
 
 // 🔱 REST Fallback for Sending Message (Optional, useful for uploads)
 export const sendMessageRest = async (req: Request, res: Response) => {
-    try {
-        const { chatId, text, image, receiverId, messageType = "text" } = req.body;
-        const senderId = (req as any).user.id;
+  try {
+    const { chatId, text, image, receiverId, messageType = "text" } = req.body;
+    const senderId = (req as any).user.id;
 
-        const chat = await Chat.findById(chatId);
-        if (!chat) return res.status(404).json({ message: "Thread not found" });
+    const chat = await Chat.findById(chatId);
+    if (!chat) return res.status(404).json({ message: "Thread not found" });
 
-        const message = await Message.create({
-            chatId,
-            senderId,
-            receiverId,
-            text,
-            image,
-            messageType
-        });
+    const message = await Message.create({
+      chatId,
+      senderId,
+      receiverId,
+      text,
+      image,
+      messageType
+    });
 
-        // Update Chat summary
-        chat.lastMessage = messageType === "text" ? text : `[Image]`;
-        chat.lastMessageAt = new Date();
-        
-        // Handling unread counts via Map (ensure it exists)
-        if (!chat.unreadCount) chat.unreadCount = new Map();
-        const currentUnread = chat.unreadCount.get(receiverId) || 0;
-        chat.unreadCount.set(receiverId, currentUnread + 1);
-        
-        await chat.save();
+    // Update Chat summary
+    chat.lastMessage = messageType === "text" ? text : `[Image]`;
+    chat.lastMessageAt = new Date();
 
-        res.status(201).json(message);
-    } catch (error: any) {
-        res.status(500).json({ message: "Message Transmission Failure", error: error.message });
-    }
+    // Handling unread counts via Map (ensure it exists)
+    if (!chat.unreadCount) chat.unreadCount = new Map();
+    const currentUnread = chat.unreadCount.get(receiverId) || 0;
+    chat.unreadCount.set(receiverId, currentUnread + 1);
+
+    await chat.save();
+
+    res.status(201).json(message);
+  } catch (error: any) {
+    res.status(500).json({ message: "Message Transmission Failure", error: error.message });
+  }
 };
 
 // 🔱 Mark messages as seen
 export const markMessageSeen = async (req: Request, res: Response) => {
-    try {
-        const { chatId } = req.params;
-        const userId = (req as any).user.id;
+  try {
+    const { chatId } = req.params;
+    const userId = (req as any).user.id;
 
-        await Message.updateMany(
-            { chatId, receiverId: userId, isSeen: false },
-            { $set: { isSeen: true, seenAt: new Date() } }
-        );
+    await Message.updateMany(
+      { chatId, receiverId: userId, isSeen: false },
+      { $set: { isSeen: true, seenAt: new Date() } }
+    );
 
-        const chat = await Chat.findById(chatId);
-        if (chat && chat.unreadCount) {
-            chat.unreadCount.set(userId, 0);
-            await chat.save();
-        }
-
-        res.status(200).json({ message: "Read Receipt Synchronized" });
-    } catch (error: any) {
-        res.status(500).json({ message: "Receipt Sync Error", error: error.message });
+    const chat = await Chat.findById(chatId);
+    if (chat && chat.unreadCount) {
+      chat.unreadCount.set(userId, 0);
+      await chat.save();
     }
+
+    res.status(200).json({ message: "Read Receipt Synchronized" });
+  } catch (error: any) {
+    res.status(500).json({ message: "Receipt Sync Error", error: error.message });
+  }
 };
 
 // 🔱 Admin: Retrieve All Global Platform Threads

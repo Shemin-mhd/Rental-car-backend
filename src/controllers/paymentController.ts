@@ -11,6 +11,9 @@ const razorpay = new Razorpay({
     key_secret: process.env.RAZORPAY_KEY_SECRET || "",
 });
 
+// ✅ Export for use in other controllers (like Fine Payments)
+(global as any).razorpay = razorpay;
+
 export const createRazorpayOrder = async (req: Request, res: Response) => {
     try {
         const { bookingId } = req.body;

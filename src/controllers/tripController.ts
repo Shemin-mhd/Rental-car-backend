@@ -20,19 +20,45 @@ export const updateTripStatus = async (req: Request, res: Response) => {
         }
 
         if (tripStatus === "Completed") {
+            const now = new Date();
+            const scheduledEnd = new Date(booking.endDate);
+            let lateFine = 0;
+
+            if (now > scheduledEnd) {
+                const diffMs = now.getTime() - scheduledEnd.getTime();
+                const diffHrs = Math.ceil(diffMs / (1000 * 60 * 60)); // Round up to nearest hour
+                lateFine = diffHrs * 200;
+            }
+
             booking.status = "Completed";
+            booking.actualReturnDate = now;
+            booking.lateFine = (booking.lateFine || 0) + lateFine;
             await booking.save();
 
-            // 🔱 Update Car Availability (Make it ready for next deployment)
-            // If the car has a standby status or location, update it here if needed
-            
+            // 🔱 Release Car for next assignment
+            const carAsset = await Car.findById(booking.carId);
+            if (carAsset) {
+                carAsset.isAvailable = true;
+                await carAsset.save();
+            }
+
             // 🛰️ Notify Observers
             const io = (global as any).io;
             if (io) {
-                io.to(id).emit("bookingStatusUpdate", { bookingId: id, status: "Completed" });
+                io.to(id).emit("bookingStatusUpdate", {
+                    bookingId: id,
+                    status: "Completed",
+                    lateFine: lateFine
+                });
             }
 
-            return res.json({ message: "Mission archived successfully.", status: "Completed" });
+            return res.json({
+                message: lateFine > 0
+                    ? `Mission Terminated. Late Fee Applied: ₹${lateFine} (${Math.ceil((now.getTime() - scheduledEnd.getTime()) / 3600000)} hrs late)`
+                    : "Mission Terminated. Asset returned on schedule.",
+                status: "Completed",
+                lateFine
+            });
         }
 
         res.status(400).json({ message: "Invalid mission termination parameters." });

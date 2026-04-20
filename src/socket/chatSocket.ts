@@ -26,6 +26,12 @@ export const initChatSocket = (io: Server) => {
       console.log(`🗄️ Thread Uplink: Socket ${socket.id} merged with chat ${chatId}`);
     });
 
+    // 🔱 Admin Protocol: Join global admin channel
+    socket.on("join-admin-room", () => {
+      socket.join("admins-room");
+      console.log(`💂 Tactical Command: Socket ${socket.id} elevated to Admin Room`);
+    });
+
     // 🔱 Data Transmission: Real-time Messaging
     socket.on("send-message", async (data: {
       chatId: string,
@@ -68,6 +74,13 @@ export const initChatSocket = (io: Server) => {
         const receiverSocketId = onlineUsers.get(receiverId);
         if (receiverSocketId) {
             io.to(receiverSocketId).emit("chat-list-update", { chatId, lastMessage: chat?.lastMessage });
+        }
+
+        // 5. Admin Global Intelligence: Sync all admins for platform-owned assets
+        if (chat?.carId) {
+           // We could check if it is an admin fleet car, but easier to just notify all admins if the receiver is an admin
+           // or we can just notify all admins of all messages? No, just admin-related ones.
+           io.to("admins-room").emit("chat-list-update", { chatId, lastMessage: chat?.lastMessage });
         }
 
       } catch (error) {

@@ -13,17 +13,18 @@ export interface IChat extends Document {
 
 const ChatSchema: Schema = new Schema(
   {
-    bookingId: { type: Schema.Types.ObjectId, ref: "Booking", required: true, unique: true },
+    bookingId: { type: Schema.Types.ObjectId, ref: "Booking" },
+    carId: { type: Schema.Types.ObjectId, ref: "Car" },
     renterId: { type: Schema.Types.ObjectId, ref: "User", required: true },
     hostId: { type: Schema.Types.ObjectId, ref: "User", required: true },
     participants: [{ type: Schema.Types.ObjectId, ref: "User" }],
     status: { type: String, enum: ["active", "completed", "blocked"], default: "active" },
     lastMessage: { type: String },
     lastMessageAt: { type: Date, default: Date.now },
-    unreadCount: { 
-      type: Map, 
-      of: Number, 
-      default: {} 
+    unreadCount: {
+      type: Map,
+      of: Number,
+      default: {}
     }
   },
   { timestamps: true }

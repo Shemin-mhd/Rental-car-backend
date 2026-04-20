@@ -19,7 +19,10 @@ export interface IBooking {
     documentStatus: "Pending" | "Approved" | "Rejected";
     razorpayPaymentId?: string;
     razorpayOrderId?: string;
-
+    lateFine?: number;
+    finePaid?: boolean;
+    fineRazorpayOrderId?: string;
+    actualReturnDate?: Date;
     createdAt: Date;
 }
 
@@ -29,6 +32,10 @@ const bookingSchema: Schema<IBooking> = new mongoose.Schema({
     startDate: { type: Date, required: true },
     endDate: { type: Date, required: true },
     totalPrice: { type: Number, required: true },
+    lateFine: { type: Number, default: 0 },
+    finePaid: { type: Boolean, default: false },
+    fineRazorpayOrderId: { type: String },
+    actualReturnDate: { type: Date },
     status: { type: String, enum: ["Pending", "Confirmed", "upcoming_pickup", "arrived", "active_trip", "Cancelled", "Completed"], default: "Pending" },
     pickupLocation: { type: String, default: "" },
 

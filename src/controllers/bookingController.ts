@@ -357,8 +357,8 @@ export const updateLocation = async (req: Request, res: Response) => {
         if (!booking) return res.status(404).json({ message: "Mission record not found." });
 
         // 🔱 Update Asset Position in tactical registry
-        await Car.findByIdAndUpdate(booking.carId, { 
-            lat, 
+        await Car.findByIdAndUpdate(booking.carId, {
+            lat,
             lng,
             availableFrom: new Date() // Keeps car "active" in registry
         });
@@ -375,6 +375,93 @@ export const updateLocation = async (req: Request, res: Response) => {
         }
 
         res.json({ message: "Telemetry Link Stable", status: "Synchronized" });
+    } catch (error: any) {
+        res.status(500).json({ message: error.message });
+    }
+};
+// 🔱 Admin: Full Override - Change Booking Status
+export const patchBookingStatus = async (req: Request, res: Response) => {
+    try {
+        const { id } = req.params;
+        const { status } = req.body;
+
+        const booking = await Booking.findById(id);
+        if (!booking) return res.status(404).json({ message: "Booking dossier not found" });
+
+        booking.status = status;
+        await booking.save();
+
+        // 🛰️ Real-time Status Sync
+        const io = (global as any).io;
+        if (io) {
+            io.to(id).emit("bookingStatusUpdate", { bookingId: id, status });
+        }
+
+        res.json({ message: "Hyper-Transaction status overridden", status });
+    } catch (error: any) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+// 🔱 Admin: Apply Manual Fine (Damages, Cleaning, etc.)
+export const applyManualFine = async (req: Request, res: Response) => {
+    try {
+        const { id } = req.params;
+        const { amount } = req.body;
+
+        const booking = await Booking.findById(id);
+        if (!booking) return res.status(404).json({ message: "Booking record not found" });
+
+        booking.lateFine = (booking.lateFine || 0) + Number(amount);
+        await booking.save();
+
+        res.json({ 
+            message: `Manual Penalty of ₹${amount} applied. Total Fines: ₹${booking.lateFine}`,
+            totalFine: booking.lateFine 
+        });
+    } catch (error: any) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+// 💳 User: Initiate fine payment (Razorpay Order)
+export const initiateFinePayment = async (req: Request, res: Response) => {
+    try {
+        const { id } = req.params;
+        const booking = await Booking.findById(id);
+        if (!booking || !booking.lateFine) return res.status(404).json({ message: "No fine found for this mission" });
+
+        const instance = (global as any).razorpay;
+        if (!instance) return res.status(500).json({ message: "Razorpay node offline" });
+
+        const order = await instance.orders.create({
+            amount: booking.lateFine * 100,
+            currency: "INR",
+            receipt: `fine_rect_${id.slice(-6)}`,
+        });
+
+        booking.fineRazorpayOrderId = order.id;
+        await booking.save();
+
+        res.json({ orderId: order.id, amount: booking.lateFine, currency: "INR" });
+    } catch (error: any) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+// 💳 User: Confirm fine payment success
+export const confirmFinePayment = async (req: Request, res: Response) => {
+    try {
+        const { id } = req.params;
+        const { paymentId } = req.body;
+
+        const booking = await Booking.findById(id);
+        if (!booking) return res.status(404).json({ message: "Record lost" });
+
+        booking.finePaid = true;
+        await booking.save();
+
+        res.json({ message: "Fine settled. Legal status: CLEAR.", finePaid: true });
     } catch (error: any) {
         res.status(500).json({ message: error.message });
     }

@@ -45,6 +45,7 @@ const userSchema: Schema<IUser> = new mongoose.Schema({
     default: "PENDING"
   },
   rejectionReason: { type: String, default: "" },
+  isBlocked: { type: Boolean, default: false },
 });
 
 const User: Model<IUser> = mongoose.model<IUser>("User", userSchema);

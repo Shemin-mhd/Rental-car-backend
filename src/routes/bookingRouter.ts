@@ -15,6 +15,10 @@ import {
   markHandedOver,
   getHostBookings,
   updateLocation,
+  patchBookingStatus,
+  applyManualFine,
+  initiateFinePayment,
+  confirmFinePayment,
 } from "../controllers/bookingController";
 
 import { updateTripStatus } from "../controllers/tripController";
@@ -67,7 +71,7 @@ router.patch("/:id/arrived", authenticate, markArrived);
 
 // 🔑 Host/Admin: Confirm car handed over → status = active_trip
 router.patch("/:id/handover", authenticate, markHandedOver);
- 
+
 // 📡 Unit/Simulation: Send live telemetry pulse
 router.post("/:id/location", authenticate, updateLocation);
 
@@ -76,5 +80,15 @@ router.delete("/:id", authenticate, deleteBooking);
 
 // 🔱 Admin: Void a transaction
 router.delete("/admin/:id", authenticate, authorizeRole("admin"), adminDeleteBooking);
+
+// 🔱 Admin: Apply manual fine
+router.post("/:id/fine", authenticate, authorizeRole("admin"), applyManualFine);
+
+// 💳 User: Fine payments
+router.post("/:id/fine-payment", authenticate, initiateFinePayment);
+router.post("/:id/fine-confirm", authenticate, confirmFinePayment);
+
+// 🔱 Admin: Override mission status
+router.patch("/:id/status", authenticate, authorizeRole("admin"), patchBookingStatus);
 
 export default router;
