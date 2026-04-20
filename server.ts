@@ -19,8 +19,9 @@ const app = express();
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
   cors: {
-    origin: ["https://rental-car-kpsl.vercel.app"], // Adjust depending on frontend URL
-    methods: ["GET", "POST"]
+    origin: process.env.FRONTEND_URL || "http://localhost:3005",
+    methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
+    credentials: true
   }
 });
 
@@ -33,7 +34,10 @@ initChatSocket(io);
 initFleetSocket(io);
 
 // ✅ middleware
-app.use(cors());
+app.use(cors({
+  origin: process.env.FRONTEND_URL || "http://localhost:3005",
+  credentials: true
+}));
 app.use(express.json());
 app.use(passport.initialize());
 app.use("/uploads", express.static("uploads")); // Allow public access to uploaded docs
