@@ -29,13 +29,13 @@ export const googleAuthCallback = async (req: Request, res: Response) => {
     const result = await googleAuthCallbackService(req.user);
 
     // ✅ Redirect back to frontend callback page with tokens in URL
-    const FRONTEND_URL = process.env.FRONTEND_URL || "https://rental-car-lake.vercel.app/login";
+    const FRONTEND_URL = process.env.FRONTEND_URL || "https://rental-car-lake.vercel.app/";
     const redirect = (req as any).redirect || "";
     const frontendUrl = `${FRONTEND_URL}/google-callback?accessToken=${result.accessToken}&refreshToken=${result.refreshToken}&user=${JSON.stringify(result.user)}&redirect=${encodeURIComponent(redirect)}`;
     res.redirect(frontendUrl); 
   } catch (error) {
     console.error("Google Auth Error:", error);
-    const FRONTEND_URL = process.env.FRONTEND_URL || "https://rental-car-lake.vercel.app/login";
+    const FRONTEND_URL = process.env.FRONTEND_URL || "https://rental-car-lake.vercel.app//login";
     res.redirect(`${FRONTEND_URL}/login?error=Google authentication failed`);
   }
 };

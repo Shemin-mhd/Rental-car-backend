@@ -19,7 +19,7 @@ const app = express();
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
   cors: {
-    origin: process.env.FRONTEND_URL || "http://localhost:3005",
+    origin: process.env.FRONTEND_URL || "https://rental-car-lake.vercel.app",
     methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
     credentials: true
   }
@@ -35,7 +35,7 @@ initFleetSocket(io);
 
 // ✅ middleware
 app.use(cors({
-  origin: process.env.FRONTEND_URL || "http://localhost:3005",
+  origin: process.env.FRONTEND_URL || "https://rental-car-lake.vercel.app",
   credentials: true
 }));
 app.use(express.json());
